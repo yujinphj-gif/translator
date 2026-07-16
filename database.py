@@ -1,4 +1,4 @@
-import pyodbc
+import pymssql
 import os
 from datetime import datetime
 from dotenv import load_dotenv
@@ -11,33 +11,27 @@ class Database:
         self.database = os.getenv('MSSQL_DATABASE', 'EnglishChatDB')
         self.username = os.getenv('MSSQL_USERNAME', 'sa')
         self.password = os.getenv('MSSQL_PASSWORD', '')
-        self.driver = os.getenv('MSSQL_DRIVER', '{ODBC Driver 17 for SQL Server}')
-    
+
     def get_connection(self):
-        """데이터베이스 연결"""
         try:
-            connection_string = (
-                f'Driver={self.driver};'
-                f'Server={self.server};'
-                f'Database={self.database};'
-                f'UID={self.username};'
-                f'PWD={self.password};'
-                f'TrustServerCertificate=yes;'
+            conn = pymssql.connect(
+                server=self.server,
+                user=self.username,
+                password=self.password,
+                database=self.database,
+                charset='UTF-8'
             )
-            conn = pyodbc.connect(connection_string)
-            conn.autocommit = True
+            conn.autocommit(True)
             return conn
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Database connection error: {e}')
             raise
-    
+
     def init_db(self):
-        """데이터베이스 테이블 초기화"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
-            
-            # 채팅방 테이블
+
             cursor.execute('''
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'ChatRooms')
                 CREATE TABLE ChatRooms (
@@ -48,8 +42,7 @@ class Database:
                     updated_at DATETIME DEFAULT GETDATE()
                 )
             ''')
-            
-            # 메시지 테이블
+
             cursor.execute('''
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Messages')
                 CREATE TABLE Messages (
@@ -63,8 +56,7 @@ class Database:
                     FOREIGN KEY (room_id) REFERENCES ChatRooms(room_id) ON DELETE CASCADE
                 )
             ''')
-            
-            # 사용자 테이블
+
             cursor.execute('''
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'Users')
                 CREATE TABLE Users (
@@ -74,8 +66,7 @@ class Database:
                     created_at DATETIME DEFAULT GETDATE()
                 )
             ''')
-            
-            # 채팅방 참여자 테이블
+
             cursor.execute('''
                 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'RoomParticipants')
                 CREATE TABLE RoomParticipants (
@@ -87,20 +78,18 @@ class Database:
                     FOREIGN KEY (room_id) REFERENCES ChatRooms(room_id) ON DELETE CASCADE
                 )
             ''')
-            
+
             conn.commit()
             print('Database tables created successfully')
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Database initialization error: {e}')
             raise
-    
+
     def get_all_rooms(self):
-        """모든 채팅방 조회"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute('SELECT room_id, room_name, language, created_at FROM ChatRooms ORDER BY created_at DESC')
-            
             rooms = []
             for row in cursor.fetchall():
                 rooms.append({
@@ -110,69 +99,57 @@ class Database:
                     'created_at': row[3].isoformat() if row[3] else None
                 })
             return rooms
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Error getting rooms: {e}')
             raise
-    
+
     def create_room(self, room_name, language='Korean'):
-        """새 채팅방 생성"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute(
-                'INSERT INTO ChatRooms (room_name, language) VALUES (?, ?)',
+                'INSERT INTO ChatRooms (room_name, language) VALUES (%s, %s)',
                 (room_name, language)
             )
-            conn.commit()
-            
-            # 생성된 room_id 조회
             cursor.execute('SELECT @@IDENTITY')
             room_id = cursor.fetchone()[0]
             return int(room_id)
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Error creating room: {e}')
             raise
 
     def delete_room(self, room_id):
-        """채팅방 삭제"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
-            cursor.execute('DELETE FROM ChatRooms WHERE room_id = ?', (room_id,))
-            conn.commit()
-        except pyodbc.Error as e:
+            cursor.execute('DELETE FROM ChatRooms WHERE room_id = %s', (room_id,))
+        except Exception as e:
             print(f'Error deleting room: {e}')
             raise
-    
+
     def save_message(self, room_id, username, message, language='ko', translated=None):
-        """메시지 저장"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute(
-                'INSERT INTO Messages (room_id, username, message, language, translated) VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO Messages (room_id, username, message, language, translated) VALUES (%s, %s, %s, %s, %s)',
                 (room_id, username, message, language, translated)
             )
-            conn.commit()
-            
-            # 생성된 message_id 조회
             cursor.execute('SELECT @@IDENTITY')
             message_id = cursor.fetchone()[0]
             return int(message_id)
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Error saving message: {e}')
             raise
-    
+
     def get_messages(self, room_id, limit=100):
-        """채팅방 메시지 조회"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute(
-                f'SELECT TOP {limit} message_id, username, message, language, translated, created_at FROM Messages WHERE room_id = ? ORDER BY created_at DESC',
+                f'SELECT TOP {limit} message_id, username, message, language, translated, created_at FROM Messages WHERE room_id = %s ORDER BY created_at DESC',
                 (room_id,)
             )
-            
             messages = []
             for row in cursor.fetchall():
                 messages.append({
@@ -183,35 +160,31 @@ class Database:
                     'translated': row[4],
                     'created_at': row[5].isoformat() if row[5] else None
                 })
-            return list(reversed(messages))  # 시간 순서대로 정렬
-        except pyodbc.Error as e:
+            return list(reversed(messages))
+        except Exception as e:
             print(f'Error getting messages: {e}')
             raise
-    
+
     def add_room_participant(self, room_id, username):
-        """채팅방 참여자 추가"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute(
-                'INSERT INTO RoomParticipants (room_id, username) VALUES (?, ?)',
+                'INSERT INTO RoomParticipants (room_id, username) VALUES (%s, %s)',
                 (room_id, username)
             )
-            conn.commit()
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Error adding participant: {e}')
             raise
-    
+
     def remove_room_participant(self, room_id, username):
-        """채팅방 참여자 제거"""
         try:
             conn = self.get_connection()
             cursor = conn.cursor()
             cursor.execute(
-                'UPDATE RoomParticipants SET left_at = GETDATE() WHERE room_id = ? AND username = ?',
+                'UPDATE RoomParticipants SET left_at = GETDATE() WHERE room_id = %s AND username = %s',
                 (room_id, username)
             )
-            conn.commit()
-        except pyodbc.Error as e:
+        except Exception as e:
             print(f'Error removing participant: {e}')
             raise
