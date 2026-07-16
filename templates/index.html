@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>유진번역 채팅</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- 메인 화면 -->
+        <div id="mainView" class="view active">
+            <div class="header">
+                <div class="globe-icon">🌐</div>
+                <h1>유진번역 채팅</h1>
+                <p class="subtitle">실시간 번역으로 언어 구분 없이 대화하세요</p>
+                <div id="userBadge" class="user-badge" hidden>
+                    <span id="userBadgeName"></span>
+                    <button id="changeNameBtn" class="change-name-btn" type="button">이름 변경</button>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="language-selector">
+                    <label for="mainLanguageSelect">내 언어 선택</label>
+                    <select id="mainLanguageSelect" class="lang-select">
+                        <option value="ko">한국어</option>
+                        <option value="en">영어</option>
+                        <option value="ja">일본어</option>
+                        <option value="tl">필리핀어</option>
+                        <option value="id">인도네시아어</option>
+                        <option value="vi">베트남어</option>
+                    </select>
+                </div>
+
+                <button id="newRoomBtn" class="new-room-btn">+ 새 채팅방 만들기</button>
+
+                <div class="room-list">
+                    <h2>활성 채팅방</h2>
+                    <div id="roomsList" class="rooms-container">
+                        <p class="empty-state">채팅방이 없습니다</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 채팅방 화면 -->
+        <div id="chatView" class="view">
+            <div class="chat-header compact-header">
+                <button id="backBtn" class="back-btn">←</button>
+                <span id="chatUsername" class="chat-username">박혜진</span>
+                <span id="roomStatus" class="room-status">준비중...</span>
+            </div>
+
+            <div class="chat-container">
+                <div id="messagesContainer" class="messages-container"></div>
+                <div id="typingIndicator" class="typing-indicator" style="display: none;">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="language-selector">
+                    <select id="languageSelect" class="lang-select">
+                        <option value="ko">한국어</option>
+                        <option value="en">영어</option>
+                        <option value="ja">일본어</option>
+                        <option value="tl">필리핀어</option>
+                        <option value="id">인도네시아어</option>
+                        <option value="vi">베트남어</option>
+                    </select>
+                </div>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="메시지를 입력하세요..."
+                        autocomplete="off"
+                    >
+                    <button id="sendBtn" class="send-btn">전송</button>
+                </div>
+                <!-- mic hint removed per user request -->
+                <div class="control-buttons">
+                    <button id="detectBtn" type="button" class="detect-btn" title="음성 자동 감지">자동감지</button>
+                    <button id="voiceBtn" type="button" class="voice-btn" title="음성 입력">🎙</button>
+                    <button id="ttsBtn" type="button" class="tts-btn" title="번역된 텍스트 듣기">🔊</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 새 채팅방 생성 모달 -->
+        <div id="newRoomModal" class="modal">
+            <div class="modal-content">
+                <h3>새 채팅방 만들기</h3>
+                <input 
+                    type="text" 
+                    id="roomNameInput" 
+                    class="modal-input" 
+                    placeholder="채팅방 이름 (예: 비즈니스 영어 회화)"
+                >
+                <div class="modal-buttons">
+                    <button id="cancelBtn" class="modal-btn cancel-btn">취소</button>
+                    <button id="createBtn" class="modal-btn create-btn">만들기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 사용자 이름 모달 -->
+        <div id="usernameModal" class="modal">
+            <div class="modal-content">
+                <h3 id="usernameModalTitle">사용자 이름 입력</h3>
+                <input 
+                    type="text" 
+                    id="usernameInput" 
+                    class="modal-input" 
+                    placeholder="이름을 입력하세요"
+                    autocomplete="off"
+                >
+                <div class="modal-buttons">
+                    <button id="usernameConfirmBtn" class="modal-btn create-btn" disabled>확인</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

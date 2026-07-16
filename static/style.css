@@ -1,0 +1,894 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #007AFF;
+    --secondary-color: #5AC8FA;
+    --background-color: #1a1a1a;
+    --surface-color: #2d2d2d;
+    --text-color: #ffffff;
+    --text-secondary: #a0a0a0;
+    --success-color: #34C759;
+    --danger-color: #FF3B30;
+    --border-radius: 12px;
+}
+
+html, body {
+    min-height: 100%;
+    width: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+.container {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    position: relative;
+}
+
+/* View 토글 */
+.view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.view.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ========== 메인 뷰 ========== */
+#mainView {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.header {
+    text-align: left;
+    padding: 14px 16px 12px;
+    background: rgba(0, 122, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.globe-icon {
+    font-size: 30px;
+    margin-right: 12px;
+    vertical-align: middle;
+    display: inline-block;
+    animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}
+
+.header h1 {
+    font-size: 18px;
+    margin: 0 0 4px 0;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+.user-badge {
+    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    font-size: 13px;
+    color: var(--text-color);
+}
+
+.change-name-btn {
+    padding: 8px 12px;
+    background: rgba(0, 122, 255, 0.18);
+    border: 1px solid rgba(0, 122, 255, 0.4);
+    border-radius: 999px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.change-name-btn:hover {
+    background: rgba(0, 122, 255, 0.35);
+}
+
+.main-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+.language-selector {
+    margin-bottom: 30px;
+}
+
+.language-selector label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.button-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.lang-btn {
+    padding: 14px 16px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--border-radius);
+    background: transparent;
+    color: var(--text-color);
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.lang-btn:hover {
+    border-color: var(--primary-color);
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.lang-btn.active {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.new-room-btn {
+    width: 100%;
+    padding: 18px;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    border: none;
+    border-radius: var(--border-radius);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+}
+
+.new-room-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 122, 255, 0.4);
+}
+
+.new-room-btn:active {
+    transform: translateY(0);
+}
+
+.room-list h2 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.rooms-container {
+    display: grid;
+    gap: 12px;
+}
+
+.room-item {
+    padding: 16px;
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.room-item:hover {
+    background: rgba(0, 122, 255, 0.2);
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.room-item-info h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.room-item-info p {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.room-item-icon {
+    font-size: 20px;
+}
+
+.room-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.room-delete-btn {
+    padding: 8px 12px;
+    background: rgba(255, 59, 48, 0.15);
+    border: 1px solid rgba(255, 59, 48, 0.35);
+    border-radius: 999px;
+    color: #ff5c5c;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.room-delete-btn:hover {
+    background: rgba(255, 59, 48, 0.25);
+    transform: translateY(-1px);
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 40px 20px;
+}
+
+/* ========== 채팅 뷰 ========== */
+#chatView {
+    background: var(--background-color);
+}
+
+.chat-header {
+    padding: 8px 12px;
+    background: var(--surface-color);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-btn {
+    padding: 6px 8px;
+    background: transparent;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.15s ease;
+    border-radius: 8px;
+}
+
+.back-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.chat-username {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.room-status {
+    font-size: 12px;
+    color: var(--text-secondary);
+    opacity: 0.95;
+}
+
+/* compact header specific tweaks */
+.compact-header .chat-username {
+    margin-left: 4px;
+}
+.compact-header .room-status {
+    margin-left: 8px;
+}
+
+.chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+    width: auto;
+    animation: slideIn 0.3s ease;
+}
+
+.message.own, .message.other {
+    width: auto;
+}
+
+.message .message-bubble {
+    max-width: 100%;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message.own {
+    align-self: flex-end;
+}
+
+.message.other {
+    align-self: flex-start;
+}
+
+.message-username {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+    margin-left: 12px;
+}
+
+.message.own .message-username {
+    margin-left: 0;
+    margin-right: 12px;
+}
+
+.message-bubble {
+    padding: 12px 16px;
+    border-radius: 18px;
+    word-wrap: break-word;
+}
+
+.message.own .message-bubble {
+    background: var(--primary-color);
+    color: white;
+}
+
+.message.other .message-bubble {
+    background: var(--surface-color);
+    color: var(--text-color);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.message-original {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.message-translation {
+    font-size: 13px;
+    opacity: 0.7;
+    margin-top: 4px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.message-time {
+    font-size: 11px;
+    opacity: 0.6;
+    margin-top: 4px;
+    margin-left: 12px;
+}
+
+.message.own .message-time {
+    margin-left: 0;
+    margin-right: 12px;
+}
+
+.system-message {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 8px 0;
+    margin: 8px 0;
+}
+
+/* 입력 중 표시 */
+.typing-indicator {
+    display: flex !important;
+    gap: 4px;
+    padding: 12px;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-secondary);
+    animation: typing 1.4s infinite;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; }
+    30% { opacity: 1; }
+}
+
+/* 입력 영역 */
+.input-area {
+    padding: 6px 20px; /* match chat container horizontal padding */
+    background: var(--surface-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    position: relative;
+}
+
+.lang-select {
+    padding: 8px 10px;
+    background: rgba(0, 122, 255, 0.06);
+    border: 1px solid rgba(0,122,255,0.12);
+    border-radius: 8px;
+    color: var(--text-color);
+    font-size: 12px;
+    cursor: pointer;
+    min-width: 96px; /* slightly wider for desktop alignment */
+}
+
+.lang-select option {
+    background: var(--surface-color);
+    color: var(--text-color);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+/* ensure language selector lines up with message column */
+.input-area > .language-selector {
+    margin: 0; /* remove extra bottom margin that could shift layout */
+    display: flex;
+    align-items: center;
+}
+
+.message-input {
+    flex: 1;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 16px;
+    color: var(--text-color);
+    font-size: 13px;
+    outline: none;
+    transition: all 0.12s ease;
+    box-sizing: border-box;
+    height: 36px;
+}
+
+.message-input:focus {
+    border-color: var(--primary-color);
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.message-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.send-btn {
+    padding: 6px 12px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.voice-btn,
+.tts-btn {
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: var(--text-color);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.detect-btn {
+    padding: 8px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    color: var(--text-color);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.lang-select {
+    padding: 6px 8px;
+    min-width: 72px;
+    font-size: 12px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.detect-btn.active {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-color: rgba(0,0,0,0.1);
+    color: white;
+}
+
+/* mic-hint removed */
+
+.voice-btn:hover,
+.tts-btn:hover {
+    background: rgba(0, 122, 255, 0.15);
+    border-color: var(--primary-color);
+}
+
+.send-btn:hover {
+    background: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+.send-btn:active {
+    transform: scale(0.95);
+}
+
+/* ========== 모달 ========== */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: flex-end;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    width: 100%;
+    background: var(--surface-color);
+    padding: 24px;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+.modal-content h3 {
+    font-size: 18px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius);
+    color: var(--text-color);
+    font-size: 16px;
+    outline: none;
+}
+
+.modal-input:focus {
+    border-color: var(--primary-color);
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.modal-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.modal-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.modal-btn {
+    padding: 14px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-color);
+}
+
+.cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.create-btn {
+    background: var(--primary-color);
+    color: white;
+}
+
+.create-btn:hover {
+    background: var(--secondary-color);
+}
+
+.create-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========== 스크롤 ========== */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* ========== 반응형 ========== */
+@media (max-width: 640px) {
+    .container {
+        min-height: 100vh;
+    }
+
+    .button-group {
+        grid-template-columns: 1fr;
+    }
+
+    .message {
+        max-width: 95%;
+        width: auto;
+    }
+
+    .message .message-bubble {
+        max-width: 100%;
+    }
+
+    .modal-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .header {
+        padding: 30px 16px 20px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .globe-icon {
+        font-size: 40px;
+    }
+
+    .chat-header {
+        padding: 8px 12px;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .room-info {
+        width: calc(100% - 80px);
+    }
+
+    .input-area {
+        flex-wrap: wrap;
+        flex-direction: row;
+        gap: 6px;
+        padding: 8px 12px;
+        padding-bottom: max(8px, env(safe-area-inset-bottom));
+        align-items: center;
+        overflow: visible;
+    }
+
+    .lang-select {
+        flex: 0 0 72px;
+        min-width: 72px;
+        height: 36px;
+    }
+
+    .input-wrapper {
+        order: 2;
+        flex: 1 1 100%;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .message-input {
+        flex: 1;
+        min-width: 0;
+        height: 36px;
+    }
+
+    .control-buttons {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .voice-btn,
+    .tts-btn {
+        padding: 6px 8px;
+        height: 36px;
+        min-width: 40px;
+    }
+
+    .send-btn {
+        flex: 0 0 auto;
+        padding: 6px 10px;
+        height: 36px;
+        min-width: 56px;
+        z-index: 2;
+        border-left: 1px solid rgba(255,255,255,0.06);
+    }
+
+    /* Make send button visually attached to input on small screens */
+    .input-wrapper {
+        gap: 0;
+        z-index: 1;
+    }
+
+    .message-input {
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+        border-top-left-radius: 18px;
+        border-bottom-left-radius: 18px;
+    }
+
+    .send-btn {
+        border-top-left-radius: 6px;
+        border-bottom-left-radius: 6px;
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+        box-shadow: none;
+    }
+
+    .message-input, .send-btn {
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .control-buttons {
+        order: 1;
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: flex-start;
+        gap: 8px;
+        margin-top: 0;
+        z-index: 3;
+        align-items: center;
+    }
+
+    /* move language selector to the control row (before auto-detect) */
+    .input-area > .language-selector {
+        order: 1;
+        flex: 0 0 auto;
+        width: auto;
+        margin-right: 8px;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    /* unified pill style for control buttons (auto-detect / voice / tts) */
+    .control-buttons button {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        color: var(--text-color);
+        padding: 8px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        min-height: 36px;
+    }
+
+    .control-buttons button:hover {
+        background: rgba(0,122,255,0.12);
+        border-color: rgba(0,122,255,0.25);
+    }
+
+    /* make detect button gradient when active (keeps existing behavior) */
+    .detect-btn.active {
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-color: rgba(0,0,0,0.1);
+        color: white;
+    }
+
+    .room-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .room-item-actions {
+        justify-content: space-between;
+        width: 100%;
+    }
+}
