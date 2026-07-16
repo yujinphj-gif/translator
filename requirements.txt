@@ -3,7 +3,7 @@ Flask-SocketIO==5.3.4
 Flask-CORS==4.0.0
 python-socketio==5.9.0
 python-engineio==4.7.1
-pymssql==2.3.1
+pymssql==2.2.11
 python-dotenv==1.0.0
 simple-websocket==0.10.0
 Werkzeug==2.3.6
